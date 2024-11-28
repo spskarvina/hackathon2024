@@ -5,7 +5,7 @@ def getList():
     output, _ = test.communicate()
     decoded_output = output.decode('utf-8')
     lines = decoded_output.splitlines()
-    
+
     data = lines[2:]
     devices = []
     for line in data:

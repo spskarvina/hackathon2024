@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import render_template
+from utils.hwio import getList
 
 app = Flask(__name__)
 
@@ -7,5 +8,11 @@ app = Flask(__name__)
 def index():
     return render_template("dashboard.html")
 
+@app.route('/settings')
+def settings():
+    devices = getList()  # Zavolání funkce getList pro získání zařízení
+    return render_template("settings.html", devices=devices)
 if __name__ == '__main__':
     app.run(debug=True)
+
+    
