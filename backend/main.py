@@ -11,8 +11,8 @@ def index():
 @app.route('/settings')
 def settings():
     devices = getList()  # Zavolání funkce getList pro získání zařízení
-    return render_template("settings.html", devices=devices)
+    return render_template("settings2.html", devices=devices)
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
 
     

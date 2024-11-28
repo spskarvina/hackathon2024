@@ -1,0 +1,12 @@
+.container-fluid
+{
+    height: 100%;
+}
+body 
+{
+    height: 100vh
+}
+.row
+{
+    height: 100%
+}
