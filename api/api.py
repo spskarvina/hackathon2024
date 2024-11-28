@@ -13,6 +13,7 @@ origins = [
 
 current_temperature = None
 current_co2 = None
+current_illuminance = None
 
 # Připojení k databázi
 DB_CONFIG = {
@@ -48,6 +49,21 @@ async def test():
     return "funguju"
 
 
+@app.post("/api/newIlluminance")
+async def new_illuminance(request: Request):
+    raw_body = await request.body()
+
+    decoded_data = raw_body.decode("utf-8")
+    global current_illuminance
+    try:
+        concentration = int(decoded_data)
+        print("Přijatá intenzita světla: ", concentration)
+        current_illuminance = (concentration, datetime.now())
+        return {"received_concentration": concentration}
+    except ValueError:
+        print("Chyba: Neplatný formát dat")
+        return {"error": "Invalid data format"}, 400
+
 @app.post("/api/newCO2Concentration")
 async def new_concentration(request: Request):
     raw_body = await request.body()
@@ -81,7 +97,7 @@ async def new_temperature(request: Request):
         current_temperature = (temperature, datetime.now())
 
         # Uložení do databáze (temperatures)
-        query = "INSERT INTO temperatures (value, time, room) VALUES (%s, %s, %s)"
+        query = "INSERT INTO temperature (value, time, room) VALUES (%s, %s, %s)"
         await save_to_db(query, (temperature, current_temperature[1], 1))  # room = 1 (přednastavený pokoj)
 
         return {"received_temperature": temperature}
@@ -107,6 +123,13 @@ async def get_concentration():
         "time": current_co2[1]
     }
 
+@app.get("/api/getIlluminance")
+async def get_illuminance():
+    global current_illuminance
+    return {
+        "concentration": current_illuminance[0],
+        "time": current_illuminance[1]
+    }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)

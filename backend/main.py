@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from utils.hwio import getList
+from datetime import datetime
 import subprocess
+import requests
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -25,15 +28,50 @@ def delete_device():
     subprocess.run(["bch", "node", "remove", device_id])
     return redirect(url_for('settings'))
 
-import requests
 
 @app.route('/oxidesensors')
 def oxidesensors():
-    response = requests.get('http://192.168.50.100:8080/api/newCO2Concentration')
-    return render_template('oxidesensors.html', concentration=response.json())
+    try:
+        response = requests.get('http://localhost:8080/api/getCO2Concentration')
+        data = response.json()
+        dt_object = datetime.strptime(data["time"], "%Y-%m-%dT%H:%M:%S.%f")
+        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+    except requests.exceptions.JSONDecodeError:
+        dt_object = datetime.now()
 
+        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+        return render_template("oxidesensors.html", concetration="???", timestamp=formatted_time)
+    return render_template('oxidesensors.html', concentration=data["concentration"], timestamp=formatted_time)
 
+@app.route("/temperaturesensors")
+def temperaturesensors():
+    try:
 
+        response = requests.get("http://localhost:8080/api/getTemperature")
+        data = response.json()
+        dt_object = datetime.strptime(data["time"], "%Y-%m-%dT%H:%M:%S.%f")
+        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+    except requests.exceptions.JSONDecodeError:
+        dt_object = datetime.now()
+
+        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+        return render_template("temperatures.html", temperature="???", timestamp=formatted_time)
+    return render_template("temperatures.html", temperature=data["temperature"], timestamp=formatted_time)
+
+@app.route("/lightsensors")
+def lightsensors():
+    try:
+        response = requests.get("http://192.168.50.100:8080/api/getIlluminance")
+        data = response.json()
+        dt_object = datetime.strptime(data["time"], "%Y-%m-%dT%H:%M:%S.%f")
+        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+    except requests.exceptions.JSONDecodeError:
+        dt_object = datetime.now()
+
+        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+        return render_template("lightsensors.html", intensity="???", timestamp=formatted_time)
+    return render_template("lightsensors.html", intensity=data["concentration"], timestamp=formatted_time)
+    
 
 if __name__ == '__main__':
  app.run(host="0.0.0.0", debug=True)
