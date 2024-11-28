@@ -29,9 +29,8 @@ import requests
 
 @app.route('/oxidesensors')
 def oxidesensors():
-    response = requests.get('http://<node-red-ip>:<port>/temperature')
-    temperature_data = response.json()
-    return render_template('oxidesensors.html', temperature=temperature_data['temperature'])
+    response = requests.get('http://192.168.50.100:8080/api/newCO2Concentration')
+    return render_template('oxidesensors.html', concentration=response.json())
 
 
 
