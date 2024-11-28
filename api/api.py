@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from pydantic import BaseModel
 from datetime import datetime
+import aiomysql
 
 app = FastAPI()
 
@@ -14,19 +14,39 @@ origins = [
 current_temperature = None
 current_co2 = None
 
+# Připojení k databázi
+DB_CONFIG = {
+    "host": "192.168.50.100",
+    "port": 3306,
+    "user": "sc-admin",
+    "password": "SCmain",
+    "db": "sc_db"
+}
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Povolit všechny domény (pro testování)
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Povolit všechny metody (GET, POST, atd.)
-    allow_headers=["*"],  # Povolit všechny hlavičky
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+# Funkce pro uložení do databáze
+async def save_to_db(query: str, params: tuple):
+    try:
+        conn = await aiomysql.connect(**DB_CONFIG)
+        async with conn.cursor() as cur:
+            await cur.execute(query, params)
+            await conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Chyba při ukládání do databáze: {e}")
 
 
 @app.get("/test")
 async def test():
     return "funguju"
+
 
 @app.post("/api/newCO2Concentration")
 async def new_concentration(request: Request):
@@ -35,28 +55,40 @@ async def new_concentration(request: Request):
     decoded_data = raw_body.decode("utf-8")
     global current_co2
     try:
-        concentration = int(decoded_data)
+        concentration = float(decoded_data)
         print("Přijatá CO2 Koncentrace: ", concentration)
         current_co2 = (concentration, datetime.now())
+
+        # Uložení do databáze (air)
+        query = "INSERT INTO air (value, time, room) VALUES (%s, %s, %s)"
+        await save_to_db(query, (concentration, current_co2[1], 1))  # room = 1 (přednastavený pokoj)
+
         return {"received_concentration": concentration}
     except ValueError:
         print("Chyba: Neplatný formát dat")
         return {"error": "Invalid data format"}, 400
 
+
 @app.post("/api/newTemperature")
 async def new_temperature(request: Request):
     raw_body = await request.body()
-    
+
     decoded_data = raw_body.decode("utf-8")
     global current_temperature
     try:
         temperature = float(decoded_data)
         print("Přijatá teplota:", temperature)
         current_temperature = (temperature, datetime.now())
+
+        # Uložení do databáze (temperatures)
+        query = "INSERT INTO temperatures (value, time, room) VALUES (%s, %s, %s)"
+        await save_to_db(query, (temperature, current_temperature[1], 1))  # room = 1 (přednastavený pokoj)
+
         return {"received_temperature": temperature}
     except ValueError:
         print("Chyba: Neplatný formát dat")
         return {"error": "Invalid data format"}, 400
+
 
 @app.get("/api/getTemperature")
 async def get_temperature():
@@ -65,6 +97,7 @@ async def get_temperature():
         "temperature": current_temperature[0],
         "time": current_temperature[1]
     }
+
 
 @app.get("/api/getCO2Concentration")
 async def get_concentration():
