@@ -3,12 +3,17 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from pydantic import BaseModel
+from datetime import datetime
 
 app = FastAPI()
 
 origins = [
     "http://localhost:5000"
 ]
+
+current_temperature = None
+current_co2 = None
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,22 +23,21 @@ app.add_middleware(
     allow_headers=["*"],  # Povolit všechny hlavičky
 )
 
-class TemperaturePayload(BaseModel):
-    payload: float  # očekáváme číselnou hodnotu (teplotu)
 
 @app.get("/test")
 async def test():
     return "funguju"
 
 @app.post("/api/newCO2Concentration")
-async def newConcentration(request: Request):
+async def new_concentration(request: Request):
     raw_body = await request.body()
 
     decoded_data = raw_body.decode("utf-8")
-
+    global current_co2
     try:
         concentration = int(decoded_data)
         print("Přijatá CO2 Koncentrace: ", concentration)
+        current_co2 = (concentration, datetime.now())
         return {"received_concentration": concentration}
     except ValueError:
         print("Chyba: Neplatný formát dat")
@@ -41,21 +45,35 @@ async def newConcentration(request: Request):
 
 @app.post("/api/newTemperature")
 async def new_temperature(request: Request):
-    # Načtení syrového těla požadavku
     raw_body = await request.body()
     
-    # Dekódování binárních dat na text (UTF-8)
     decoded_data = raw_body.decode("utf-8")
-    
+    global current_temperature
     try:
-        # Převod na číslo (pokud se očekává hodnota jako 26.5)
         temperature = float(decoded_data)
         print("Přijatá teplota:", temperature)
+        current_temperature = (temperature, datetime.now())
         return {"received_temperature": temperature}
     except ValueError:
-        # Chyba, pokud nelze převést na číslo
         print("Chyba: Neplatný formát dat")
         return {"error": "Invalid data format"}, 400
+
+@app.get("/api/getTemperature")
+async def get_temperature():
+    global current_temperature
+    return {
+        "temperature": current_temperature[0],
+        "time": current_temperature[1]
+    }
+
+@app.get("/api/getCO2Concentration")
+async def get_concentration():
+    global current_co2
+    return {
+        "concentration": current_co2[0],
+        "time": current_co2[1]
+    }
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
