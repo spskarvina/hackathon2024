@@ -25,5 +25,16 @@ def delete_device():
     subprocess.run(["bch", "node", "remove", device_id])
     return redirect(url_for('settings'))
 
+import requests
+
+@app.route('/oxidesensors')
+def oxidesensors():
+    response = requests.get('http://<node-red-ip>:<port>/temperature')
+    temperature_data = response.json()
+    return render_template('oxidesensors.html', temperature=temperature_data['temperature'])
+
+
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+ app.run(host="0.0.0.0", debug=True)
