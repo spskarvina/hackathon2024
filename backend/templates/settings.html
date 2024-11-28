@@ -11,6 +11,7 @@
                     <th>#</th>
                     <th>ID zařízení</th>
                     <th>Alias</th>
+                    <th>Akce</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,6 +20,18 @@
                     <td>{{ loop.index }}</td>
                     <td>{{ device.id }}</td>
                     <td>{{ device.alias }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('rename_device') }}" style="display:inline;">
+                            <input type="hidden" name="device_id" value="{{ device.id }}">
+                            <input type="text" name="new_alias" placeholder="Nový alias" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Přejmenovat</button>
+                        </form>
+                        
+                        <form method="POST" action="{{ url_for('delete_device') }}" style="display:inline;">
+                            <input type="hidden" name="device_id" value="{{ device.id }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Smazat</button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
