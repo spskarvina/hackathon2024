@@ -10,3 +10,7 @@ body
 {
     height: 100%
 }
+td
+{
+    text-align: center;
+}

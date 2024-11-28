@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+<<<<<<< Updated upstream
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -30,5 +31,20 @@ async def new_temperature(payload: TemperaturePayload):
     # Zpracování přijatých dat
     return {"received_temperature": payload.payload}
 
+=======
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+
+
+app = FastAPI()
+origins = [
+    "http://localhost:5000",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins
+)
+
+>>>>>>> Stashed changes
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
