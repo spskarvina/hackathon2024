@@ -25,6 +25,20 @@ class TemperaturePayload(BaseModel):
 async def test():
     return "funguju"
 
+@app.post("/api/newCO2Concentration")
+async def newConcentration(request: Request):
+    raw_body = await request.body()
+
+    decoded_data = raw_body.decode("utf-8")
+
+    try:
+        concentration = int(decoded_data)
+        print("Přijatá CO2 Koncentrace: ", concentration)
+        return {"received_concentration": concentration}
+    except ValueError:
+        print("Chyba: Neplatný formát dat")
+        return {"error": "Invalid data format"}, 400
+
 @app.post("/api/newTemperature")
 async def new_temperature(request: Request):
     # Načtení syrového těla požadavku
