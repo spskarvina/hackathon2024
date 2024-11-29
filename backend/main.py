@@ -55,7 +55,7 @@ def temperaturesensors():
         response = requests.get("http://localhost:8080/api/latestTemperature")
         data = response.json()
 
-        return render_template("temperatures.html", temperature=data["latest_temperature"], timestamp=data["time"])
+        return render_template("temperatures.html", temperature=data["temperature"], timestamp=data["time"])
     return render_template("temperatures.html", temperature=data["temperature"], timestamp=formatted_time)
 
 @app.route("/lightsensors")
