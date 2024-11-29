@@ -134,52 +134,61 @@ async def new_temperature(request: Request):
 @app.get("/api/getTemperature")
 async def get_temperature():
     global current_temperature
-    return {
-        "temperature": current_temperature[0],
-        "time": current_temperature[1]
-    }
+    try:
+        return {
+            "temperature": current_temperature[0],
+            "time": current_temperature[1]
+        }
+    except Exception:
+        return latest_temperature()
 
 
 @app.get("/api/getCO2Concentration")
 async def get_concentration():
     global current_co2
-    return {
-        "concentration": current_co2[0],
-        "time": current_co2[1]
-    }
+    try:
+        return {
+            "concentration": current_co2[0],
+            "time": current_co2[1]
+        }
+    except Exception:
+        return latest_co2concentration()
 
 @app.get("/api/getIlluminance")
 async def get_illuminance():
     global current_illuminance
-    return {
-        "concentration": current_illuminance[0],
-        "time": current_illuminance[1]
-    }
+    try:
+        return {
+            "concentration": current_illuminance[0],
+            "time": current_illuminance[1]
+        }
+    except Exception:
+        return latest_illuminance()
 
 @app.get("/api/latestTemperature")
 async def latest_temperature():
     query = "SELECT value, time FROM temperature ORDER BY time DESC LIMIT 1;"
     result = await db_query(query)
     if result:
-        return {"latest_temperature": result[0], "time": result[1]}  # Vrací hodnotu teploty
+        return {"temperature": result[0], "time": result[1]}  # Vrací hodnotu teploty
     else:
         return {"error": "No data found"}
     
 @app.get("/api/latestCO2Concentration")
-async def latest_temperature():
+async def latest_co2concentration():
     query = "SELECT value, time FROM air ORDER BY time DESC LIMIT 1;"
     result = await db_query(query)
     if result:
-        return {"latest_concentration": result[0], "time": result[1]}  # Vrací hodnotu teploty
+        return {"concentration": result[0], "time": result[1]}  # Vrací hodnotu teploty
     else:
         return {"error": "No data found"}
     
 @app.get("/api/latestIlluminance")
-async def latest_temperature():
+async def latest_illuminance():
     query = "SELECT value, time FROM light ORDER BY time DESC LIMIT 1;"
     result = await db_query(query)
     if result:
-        return {"latest_illuminance": result[0], "time": result[1]}  # Vrací hodnotu teploty
+        return {"concentration": result[0], "time": result[1]}  # Vrací hodnotu teploty
     else:
         return {"error": "No data found"}
 

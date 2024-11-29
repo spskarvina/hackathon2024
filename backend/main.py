@@ -37,10 +37,9 @@ def oxidesensors():
         dt_object = datetime.strptime(data["time"], "%Y-%m-%dT%H:%M:%S.%f")
         formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
     except requests.exceptions.JSONDecodeError:
-        dt_object = datetime.now()
-
-        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
-        return render_template("oxidesensors.html", concetration="???", timestamp=formatted_time)
+        response = requests.get("http://localhost:8080/api/latestCO2Concentration")
+        data = response.json()
+        return render_template("oxidesensors.html", concetration=data["concentration"], timestamp=data["time"])
     return render_template('oxidesensors.html', concentration=data["concentration"], timestamp=formatted_time)
 
 @app.route("/temperaturesensors")
@@ -52,10 +51,11 @@ def temperaturesensors():
         dt_object = datetime.strptime(data["time"], "%Y-%m-%dT%H:%M:%S.%f")
         formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
     except requests.exceptions.JSONDecodeError:
-        dt_object = datetime.now()
 
-        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
-        return render_template("temperatures.html", temperature="???", timestamp=formatted_time)
+        response = requests.get("http://localhost:8080/api/latestTemperature")
+        data = response.json()
+
+        return render_template("temperatures.html", temperature=data["latest_temperature"], timestamp=data["time"])
     return render_template("temperatures.html", temperature=data["temperature"], timestamp=formatted_time)
 
 @app.route("/lightsensors")
@@ -66,10 +66,9 @@ def lightsensors():
         dt_object = datetime.strptime(data["time"], "%Y-%m-%dT%H:%M:%S.%f")
         formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
     except requests.exceptions.JSONDecodeError:
-        dt_object = datetime.now()
-
-        formatted_time = dt_object.strftime("%Y-%m-%d %H:%M:%S")
-        return render_template("lightsensors.html", intensity="???", timestamp=formatted_time)
+        response = requests.get("http://localhost:8080/api/latestIlluminance")
+        data = response.json()
+        return render_template("lightsensors.html", intensity=data["concentration"], timestamp=data["time"])
     return render_template("lightsensors.html", intensity=data["concentration"], timestamp=formatted_time)
     
 
