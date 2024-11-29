@@ -4,8 +4,13 @@
 
 {% block content %}
 
-<h2>Intenzita světla v místnosti: {{ intensity }} lx</h2>
-<h3>Poslední aktualizace: {{ timestamp }}</h3>
+<h1 class="mt-4">Světlo</h1>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <h2>Intenzita světla v místnosti: {{ intensity }} lx</h2>
+            <h3>Poslední aktualizace: {{ timestamp }}</h3>
+        </div>
+    </div>
 
 
 
