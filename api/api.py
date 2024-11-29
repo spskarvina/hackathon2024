@@ -59,6 +59,11 @@ async def new_illuminance(request: Request):
         concentration = int(decoded_data)
         print("Přijatá intenzita světla: ", concentration)
         current_illuminance = (concentration, datetime.now())
+
+        # Uložení do databáze (light)
+        query = "INSERT INTO light (value, time, room) VALUES (%s, %s, %s)"
+        await save_to_db(query, (concentration, current_illuminance[1], 1))  # room = 1 (přednastavený pokoj)
+
         return {"received_concentration": concentration}
     except ValueError:
         print("Chyba: Neplatný formát dat")
