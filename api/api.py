@@ -32,7 +32,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Funkce pro uložení do databáze
+async def get_db_connection():
+    return await aiomysql.connect(
+        host="192.168.50.100",
+        port=3306,
+        user="sc-admin",
+        password="SCmain",
+        db="sc_db"
+)
+
 async def save_to_db(query: str, params: tuple):
     try:
         conn = await aiomysql.connect(**DB_CONFIG)
@@ -42,6 +50,18 @@ async def save_to_db(query: str, params: tuple):
         conn.close()
     except Exception as e:
         print(f"Chyba při ukládání do databáze: {e}")
+
+async def db_query(query: str):
+    conn = await get_db_connection()
+    try:
+        async with conn.cursor() as cursor:
+            await cursor.execute(query)
+            result = await cursor.fetchone()  # Vrátí jeden řádek výsledku
+        return result
+    except Exception as e:
+        print("Chyba při práci s databází: ", e)
+    finally:
+        conn.close()
 
 
 @app.get("/test")
@@ -56,7 +76,7 @@ async def new_illuminance(request: Request):
     decoded_data = raw_body.decode("utf-8")
     global current_illuminance
     try:
-        concentration = int(decoded_data)
+        concentration = float(decoded_data)
         print("Přijatá intenzita světla: ", concentration)
         current_illuminance = (concentration, datetime.now())
 
@@ -135,6 +155,33 @@ async def get_illuminance():
         "concentration": current_illuminance[0],
         "time": current_illuminance[1]
     }
+
+@app.get("/api/latestTemperature")
+async def latest_temperature():
+    query = "SELECT value FROM temperature ORDER BY time DESC LIMIT 1;"
+    result = await db_query(query)
+    if result:
+        return {"latest_temperature": result[0]}  # Vrací hodnotu teploty
+    else:
+        return {"error": "No data found"}
+    
+@app.get("/api/latestCO2Concentration")
+async def latest_temperature():
+    query = "SELECT value FROM air ORDER BY time DESC LIMIT 1;"
+    result = await db_query(query)
+    if result:
+        return {"latest_concentration": result[0]}  # Vrací hodnotu teploty
+    else:
+        return {"error": "No data found"}
+    
+@app.get("/api/latestIlluminance")
+async def latest_temperature():
+    query = "SELECT value FROM light ORDER BY time DESC LIMIT 1;"
+    result = await db_query(query)
+    if result:
+        return {"latest_illuminance": result[0]}  # Vrací hodnotu teploty
+    else:
+        return {"error": "No data found"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
