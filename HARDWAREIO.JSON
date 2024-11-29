@@ -1,6 +1,6 @@
 [
     {
-        "id": "234720a580dd5b8e",
+        "id": "63457ec5faeef9c1",
         "type": "tab",
         "label": "LEDStrip",
         "disabled": false,
@@ -8,19 +8,19 @@
         "env": []
     },
     {
-        "id": "ec17e8d751891a8b",
+        "id": "f45ca3b9f9d9857e",
         "type": "group",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Temp Test",
         "style": {
             "label": true
         },
         "nodes": [
-            "c1419bf93414a5db",
-            "8352491ea2aafe0c",
-            "db24bd59f9df920a",
-            "cf455efe3894e5e2",
-            "2d9b93d1c620d3fe"
+            "fc2ed2e3a5fd7853",
+            "b195ae2549557ba3",
+            "2351a53e165a607c",
+            "9e2a9cbc44e2f8bd",
+            "797dbe23b77d3005"
         ],
         "x": 194,
         "y": 339,
@@ -28,16 +28,16 @@
         "h": 242
     },
     {
-        "id": "306ddb44b333025c",
+        "id": "d7a97b41930c4d95",
         "type": "group",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "CO2 Test",
         "style": {
             "label": true
         },
         "nodes": [
-            "62c8d6c4e6abbe11",
-            "ea26b12e9fc5ed8c"
+            "87dc415af6620537",
+            "a921ce69fd345776"
         ],
         "x": 194,
         "y": 879,
@@ -45,10 +45,10 @@
         "h": 122
     },
     {
-        "id": "c1419bf93414a5db",
+        "id": "fc2ed2e3a5fd7853",
         "type": "inject",
-        "z": "234720a580dd5b8e",
-        "g": "ec17e8d751891a8b",
+        "z": "63457ec5faeef9c1",
+        "g": "f45ca3b9f9d9857e",
         "name": "+35",
         "props": [
             {
@@ -66,19 +66,20 @@
         "y": 380,
         "wires": [
             [
-                "35bbf54569280204",
-                "db01d81c7138b691"
+                "4a4fe2d8274c290c",
+                "4bf9688fdc599aeb"
             ]
         ]
     },
     {
-        "id": "db01d81c7138b691",
+        "id": "4bf9688fdc599aeb",
         "type": "function",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "DegToHEX",
-        "func": "function rgbToHex(r, g, b) {\n    // Ensure the values are in the range 0-255\n    const isValid = [r, g, b].every((c) => c >= 0 && c <= 255);\n    if (!isValid) {\n        throw new Error(\"Invalid RGB value. Each component must be between 0 and 255.\");\n    }\n\n    // Convert each component to a 2-digit hex value\n    const toHex = (component) => component.toString(16).padStart(2, '0');\n    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;\n}\n\nvar tep = msg.payload;\nvar check = 0;\n\n//40 > 30\nif (tep >= 30) {\n    check = tep - 30;\n    var r = 255;\n    var g = 0;\n    var b = 0;\n}\n//30 > 20\nelse if (tep >= 20) {\n    var r = 255;\n    var g = 225;\n    var b = 0;\n}\n//20 > 10\nelse if (tep >= 10) {\n    var r = 15;\n    var g = 255;\n    var b = 0;\n}\n//10 > 0\nelse if (tep >= 0) {\n    var r = 125;\n    var g = 145;\n    var b = 255;\n}\n//0 > -10\nelse {\n    var r = 0;\n    var g = 25;\n    var b = 255;\n}\n\nmsg.payload = rgbToHex(r, g, b);\n\nreturn msg;\n",
+        "func": "function rgbToHex(r, g, b) {\n    // Ensure the values are in the range 0-255\n    const isValid = [r, g, b].every((c) => c >= 0 && c <= 255);\n    if (!isValid) {\n        throw new Error(\"Invalid RGB value. Each component must be between 0 and 255.\");\n    }\n\n    // Convert each component to a 2-digit hex value\n    const toHex = (component) => component.toString(16).padStart(2, '0');\n    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;\n}\n\nvar tep = msg.payload;\nvar check = 0;\n\n//40 > 30\nif (tep >= 29) {\n    check = tep - 30;\n    var r = 255;\n    var g = 0;\n    var b = 0;\n}\n//30 > 20\nelse if (tep >= 25) {\n    var r = 255;\n    var g = 225;\n    var b = 0;\n}\n//20 > 10\nelse if (tep >= 20) {\n    var r = 15;\n    var g = 255;\n    var b = 0;\n}\n//10 > 0\nelse if (tep >= 0) {\n    var r = 125;\n    var g = 145;\n    var b = 255;\n}\n//0 > -10\nelse {\n    var r = 0;\n    var g = 25;\n    var b = 255;\n}\n\nmsg.payload = rgbToHex(r, g, b);\n\nreturn msg;\n",
         "outputs": 1,
-        "noerr": 9,
+        "timeout": "",
+        "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
@@ -86,17 +87,17 @@
         "y": 620,
         "wires": [
             [
-                "7ab6227b35eddb8d",
-                "f35ec17c03a4ad30"
+                "3c8c1468b08acb78",
+                "41123c907d837905"
             ]
         ]
     },
     {
-        "id": "08ab8addea61bc1e",
+        "id": "8a3aed2a767f876f",
         "type": "mqtt in",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Temperature",
-        "topic": "node/air-quality-monitor:1/thermometer/0:1/temperature",
+        "topic": "node/push-button:1/thermometer/0:1/temperature",
         "qos": "2",
         "datatype": "auto-detect",
         "broker": "29fba84a.b2af58",
@@ -108,17 +109,17 @@
         "y": 620,
         "wires": [
             [
-                "db01d81c7138b691",
-                "da6be80267a25f8c",
-                "35bbf54569280204"
+                "4bf9688fdc599aeb",
+                "a8b75e98ec68dd50",
+                "4a4fe2d8274c290c"
             ]
         ]
     },
     {
-        "id": "8352491ea2aafe0c",
+        "id": "b195ae2549557ba3",
         "type": "inject",
-        "z": "234720a580dd5b8e",
-        "g": "ec17e8d751891a8b",
+        "z": "63457ec5faeef9c1",
+        "g": "f45ca3b9f9d9857e",
         "name": "+5",
         "props": [
             {
@@ -136,15 +137,15 @@
         "y": 500,
         "wires": [
             [
-                "35bbf54569280204",
-                "db01d81c7138b691"
+                "4a4fe2d8274c290c",
+                "4bf9688fdc599aeb"
             ]
         ]
     },
     {
-        "id": "35bbf54569280204",
+        "id": "4a4fe2d8274c290c",
         "type": "change",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Temp flow",
         "rules": [
             {
@@ -167,9 +168,9 @@
         ]
     },
     {
-        "id": "7ab6227b35eddb8d",
+        "id": "3c8c1468b08acb78",
         "type": "change",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Color flow",
         "rules": [
             {
@@ -189,15 +190,15 @@
         "y": 820,
         "wires": [
             [
-                "186b634bb7360cf3"
+                "a53e4822a81531bd"
             ]
         ]
     },
     {
-        "id": "db24bd59f9df920a",
+        "id": "2351a53e165a607c",
         "type": "inject",
-        "z": "234720a580dd5b8e",
-        "g": "ec17e8d751891a8b",
+        "z": "63457ec5faeef9c1",
+        "g": "f45ca3b9f9d9857e",
         "name": "+15",
         "props": [
             {
@@ -215,15 +216,15 @@
         "y": 460,
         "wires": [
             [
-                "db01d81c7138b691",
-                "35bbf54569280204"
+                "4bf9688fdc599aeb",
+                "4a4fe2d8274c290c"
             ]
         ]
     },
     {
-        "id": "c6048cdafe2c3809",
+        "id": "f56340aeba98fd24",
         "type": "mqtt out",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Ans",
         "topic": "node/power-controller:0/led-strip/-/effect/set",
         "qos": "",
@@ -239,9 +240,9 @@
         "wires": []
     },
     {
-        "id": "186b634bb7360cf3",
+        "id": "a53e4822a81531bd",
         "type": "function",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Connecting",
         "func": "msg.payload = {\n    \"type\": flow.get(\"typ\"), \"wait\": 5000, \"color\": flow.get(\"color\")\n}\nreturn msg;",
         "outputs": 1,
@@ -253,16 +254,16 @@
         "y": 820,
         "wires": [
             [
-                "c6048cdafe2c3809",
-                "9941dd9ee33d9483",
-                "2fecf4b4b8b4589d"
+                "f56340aeba98fd24",
+                "15baf392173ad70a",
+                "b3f991040f2c08c9"
             ]
         ]
     },
     {
-        "id": "0440d51db6863b10",
+        "id": "575aaccea2b3313f",
         "type": "inject",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Test",
         "props": [
             {
@@ -274,22 +275,22 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"type\":\"icicle\", \"wait\":50, \"color\":\"#110011\"}",
+        "payload": "{\"type\":\"icicle\", \"wait\":50, \"color\":\"#ff0000\"}",
         "payloadType": "str",
         "x": 1030,
         "y": 240,
         "wires": [
             [
-                "c6048cdafe2c3809",
-                "2fecf4b4b8b4589d",
-                "9941dd9ee33d9483"
+                "f56340aeba98fd24",
+                "b3f991040f2c08c9",
+                "15baf392173ad70a"
             ]
         ]
     },
     {
-        "id": "f2934ee47c321394",
+        "id": "135dc8c07997d7ec",
         "type": "change",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Reset Color flow",
         "rules": [
             {
@@ -309,14 +310,14 @@
         "y": 740,
         "wires": [
             [
-                "186b634bb7360cf3"
+                "a53e4822a81531bd"
             ]
         ]
     },
     {
-        "id": "b56aa0138d9bbf9c",
+        "id": "dacb8218246cb62c",
         "type": "inject",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "RESET",
         "props": [
             {
@@ -334,14 +335,14 @@
         "y": 240,
         "wires": [
             [
-                "f2934ee47c321394"
+                "135dc8c07997d7ec"
             ]
         ]
     },
     {
-        "id": "da6be80267a25f8c",
+        "id": "a8b75e98ec68dd50",
         "type": "debug",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Input test",
         "active": true,
         "tosidebar": true,
@@ -356,11 +357,11 @@
         "wires": []
     },
     {
-        "id": "4ede83f5a7adb95a",
+        "id": "9adf5d991a107a8d",
         "type": "mqtt in",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "CO2",
-        "topic": "node/air-quality-monitor:1/co2-meter/-/concentration",
+        "topic": "node/air-quality-monitor:0/co2-meter/-/concentration",
         "qos": "2",
         "datatype": "auto-detect",
         "broker": "29fba84a.b2af58",
@@ -372,17 +373,17 @@
         "y": 820,
         "wires": [
             [
-                "e4e4e202bf42fe4d",
-                "da6be80267a25f8c",
-                "1a16afa462b961cd",
-                "bf8ee79727ca1db9"
+                "6638ddf493c5eeaf",
+                "a8b75e98ec68dd50",
+                "9fa2a6dfeb90008a",
+                "45a8e4e40d8dd59c"
             ]
         ]
     },
     {
-        "id": "e4e4e202bf42fe4d",
+        "id": "6638ddf493c5eeaf",
         "type": "change",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "CO2 flow",
         "rules": [
             {
@@ -405,10 +406,39 @@
         ]
     },
     {
-        "id": "62c8d6c4e6abbe11",
+        "id": "87dc415af6620537",
         "type": "inject",
-        "z": "234720a580dd5b8e",
-        "g": "306ddb44b333025c",
+        "z": "63457ec5faeef9c1",
+        "g": "d7a97b41930c4d95",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "500",
+        "payloadType": "str",
+        "x": 290,
+        "y": 920,
+        "wires": [
+            [
+                "6638ddf493c5eeaf",
+                "9fa2a6dfeb90008a",
+                "e0021ddd2835db73",
+                "45a8e4e40d8dd59c"
+            ]
+        ]
+    },
+    {
+        "id": "a921ce69fd345776",
+        "type": "inject",
+        "z": "63457ec5faeef9c1",
+        "g": "d7a97b41930c4d95",
         "name": "",
         "props": [
             {
@@ -426,17 +456,17 @@
         "y": 960,
         "wires": [
             [
-                "e4e4e202bf42fe4d",
-                "1a16afa462b961cd",
-                "48dfd3bd0deed9c3",
-                "bf8ee79727ca1db9"
+                "6638ddf493c5eeaf",
+                "9fa2a6dfeb90008a",
+                "e0021ddd2835db73",
+                "45a8e4e40d8dd59c"
             ]
         ]
     },
     {
-        "id": "1a16afa462b961cd",
+        "id": "9fa2a6dfeb90008a",
         "type": "function",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "MeasuringCO2",
         "func": "function rgbToHex(r, g, b) {\n    // Ensure the values are in the range 0-255\n    if ((r < 0 || r > 255) || (g < 0 || g > 255) || (b < 0 || b > 255)) {\n        throw new Error(\"Invalid RGB value. Each component must be between 0 and 255.\");\n    }\n\n    // Convert each component to a 2-digit hex value and concatenate\n    const toHex = (component) => component.toString(16).padStart(2, '0'); // Ensure 2 digits\n    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;\n}\n\nvar res = msg.payload;\n\nif(msg.payload>=3000) {\n    var r = 255;\n    var g = 0;\n    var b = 0;\n}\n\nmsg.payload = rgbToHex(r,g,b);\n\nreturn msg;",
         "outputs": 1,
@@ -448,15 +478,15 @@
         "y": 820,
         "wires": [
             [
-                "7ab6227b35eddb8d",
-                "f35ec17c03a4ad30"
+                "3c8c1468b08acb78",
+                "41123c907d837905"
             ]
         ]
     },
     {
-        "id": "f35ec17c03a4ad30",
+        "id": "41123c907d837905",
         "type": "debug",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "HexColor",
         "active": true,
         "tosidebar": true,
@@ -471,10 +501,10 @@
         "wires": []
     },
     {
-        "id": "cf455efe3894e5e2",
+        "id": "9e2a9cbc44e2f8bd",
         "type": "inject",
-        "z": "234720a580dd5b8e",
-        "g": "ec17e8d751891a8b",
+        "z": "63457ec5faeef9c1",
+        "g": "f45ca3b9f9d9857e",
         "name": "+25",
         "props": [
             {
@@ -492,16 +522,16 @@
         "y": 420,
         "wires": [
             [
-                "db01d81c7138b691",
-                "35bbf54569280204"
+                "4bf9688fdc599aeb",
+                "4a4fe2d8274c290c"
             ]
         ]
     },
     {
-        "id": "2d9b93d1c620d3fe",
+        "id": "797dbe23b77d3005",
         "type": "inject",
-        "z": "234720a580dd5b8e",
-        "g": "ec17e8d751891a8b",
+        "z": "63457ec5faeef9c1",
+        "g": "f45ca3b9f9d9857e",
         "name": "-5",
         "props": [
             {
@@ -519,15 +549,15 @@
         "y": 540,
         "wires": [
             [
-                "db01d81c7138b691",
-                "35bbf54569280204"
+                "4bf9688fdc599aeb",
+                "4a4fe2d8274c290c"
             ]
         ]
     },
     {
-        "id": "9941dd9ee33d9483",
+        "id": "15baf392173ad70a",
         "type": "change",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "LED flow",
         "rules": [
             {
@@ -550,9 +580,9 @@
         ]
     },
     {
-        "id": "48dfd3bd0deed9c3",
+        "id": "e0021ddd2835db73",
         "type": "debug",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "CO2",
         "active": true,
         "tosidebar": true,
@@ -567,9 +597,9 @@
         "wires": []
     },
     {
-        "id": "52bed1a45c0618b4",
+        "id": "e0c9aa531292caa4",
         "type": "change",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "pulse-color typ",
         "rules": [
             {
@@ -592,9 +622,9 @@
         ]
     },
     {
-        "id": "bf8ee79727ca1db9",
+        "id": "45a8e4e40d8dd59c",
         "type": "switch",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Types",
         "property": "payload",
         "propertyType": "msg",
@@ -617,18 +647,18 @@
         "y": 1000,
         "wires": [
             [
-                "5e957e65e7d56731",
-                "3026db3f799ecb40"
+                "6e31469e9a49dd75",
+                "25d2e561502661cc"
             ],
             [
-                "52bed1a45c0618b4"
+                "e0c9aa531292caa4"
             ]
         ]
     },
     {
-        "id": "5e957e65e7d56731",
+        "id": "6e31469e9a49dd75",
         "type": "debug",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "types",
         "active": true,
         "tosidebar": true,
@@ -643,9 +673,9 @@
         "wires": []
     },
     {
-        "id": "3026db3f799ecb40",
+        "id": "25d2e561502661cc",
         "type": "change",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "stroboscope",
         "rules": [
             {
@@ -668,9 +698,9 @@
         ]
     },
     {
-        "id": "2fecf4b4b8b4589d",
+        "id": "b3f991040f2c08c9",
         "type": "debug",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Ans test",
         "active": true,
         "tosidebar": true,
@@ -685,9 +715,9 @@
         "wires": []
     },
     {
-        "id": "90aee9c09c231728",
+        "id": "2313d59f135de81e",
         "type": "mqtt in",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "Button reset",
         "topic": "node/push-button:1/push-button/-/event-count",
         "qos": "2",
@@ -701,14 +731,14 @@
         "y": 560,
         "wires": [
             [
-                "f2934ee47c321394"
+                "135dc8c07997d7ec"
             ]
         ]
     },
     {
-        "id": "249c891ddee8d6f4",
+        "id": "0de845dc23750490",
         "type": "inject",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "START",
         "props": [
             {
@@ -724,23 +754,20 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"type\":\"icicle\", \"wait\":50, \"color\":\"#110011\"}",
-        "payloadType": "str",
+        "payload": "",
+        "payloadType": "date",
         "x": 790,
         "y": 180,
         "wires": [
             [
-                "7d4b71affe56a77e",
-                "c6048cdafe2c3809",
-                "9941dd9ee33d9483",
-                "2fecf4b4b8b4589d"
+                "b01fddba0fda655a"
             ]
         ]
     },
     {
-        "id": "7d4b71affe56a77e",
+        "id": "b01fddba0fda655a",
         "type": "change",
-        "z": "234720a580dd5b8e",
+        "z": "63457ec5faeef9c1",
         "name": "pulse-color START",
         "rules": [
             {
@@ -763,30 +790,25 @@
         ]
     },
     {
-        "id": "ea26b12e9fc5ed8c",
-        "type": "inject",
-        "z": "234720a580dd5b8e",
-        "g": "306ddb44b333025c",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "500",
-        "payloadType": "str",
-        "x": 290,
-        "y": 920,
+        "id": "2a797f18c848b5eb",
+        "type": "mqtt in",
+        "z": "63457ec5faeef9c1",
+        "name": "Temperature Button",
+        "topic": "node/push-button:0/thermometer/0:1/temperature",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "29fba84a.b2af58",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 270,
+        "y": 680,
         "wires": [
             [
-                "bf8ee79727ca1db9",
-                "1a16afa462b961cd",
-                "48dfd3bd0deed9c3"
+                "4bf9688fdc599aeb",
+                "a8b75e98ec68dd50",
+                "4a4fe2d8274c290c"
             ]
         ]
     },
