@@ -1,0 +1,870 @@
+[
+    {
+        "id": "9925ae1237f95fb0",
+        "type": "tab",
+        "label": "LEDStrip",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "49e92c1436c53a76",
+        "type": "group",
+        "z": "9925ae1237f95fb0",
+        "name": "Temp Test",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "2096bcd859963195",
+            "9ff65f68459bf453",
+            "267764eb4b282061",
+            "d85a17681b41e770",
+            "48e071b9924096fb"
+        ],
+        "x": 194,
+        "y": 119,
+        "w": 172,
+        "h": 242
+    },
+    {
+        "id": "6d6b3674232e94b6",
+        "type": "group",
+        "z": "9925ae1237f95fb0",
+        "name": "CO2 Test",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "64b12a98da9ee1d0",
+            "3ce20d1a9479eb7b"
+        ],
+        "x": 194,
+        "y": 659,
+        "w": 172,
+        "h": 122
+    },
+    {
+        "id": "2096bcd859963195",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "g": "49e92c1436c53a76",
+        "name": "+35",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "35",
+        "payloadType": "num",
+        "x": 290,
+        "y": 160,
+        "wires": [
+            [
+                "a66a334e7a07817b",
+                "5f05b0b800a6c1ee"
+            ]
+        ]
+    },
+    {
+        "id": "5f05b0b800a6c1ee",
+        "type": "function",
+        "z": "9925ae1237f95fb0",
+        "name": "DegToHEX",
+        "func": "function rgbToHex(r, g, b) {\n    // Ensure the values are in the range 0-255\n    const isValid = [r, g, b].every((c) => c >= 0 && c <= 255);\n    if (!isValid) {\n        throw new Error(\"Invalid RGB value. Each component must be between 0 and 255.\");\n    }\n\n    // Convert each component to a 2-digit hex value\n    const toHex = (component) => component.toString(16).padStart(2, '0');\n    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;\n}\n\nvar tep = msg.payload;\nvar check = 0;\n\n//40 > 30\nif (tep >= 30) {\n    check = tep - 30;\n    var r = 255;\n    var g = 0;\n    var b = 0;\n}\n//30 > 20\nelse if (tep >= 20) {\n    var r = 255;\n    var g = 225;\n    var b = 0;\n}\n//20 > 10\nelse if (tep >= 10) {\n    var r = 15;\n    var g = 255;\n    var b = 0;\n}\n//10 > 0\nelse if (tep >= 0) {\n    var r = 125;\n    var g = 145;\n    var b = 255;\n}\n//0 > -10\nelse {\n    var r = 0;\n    var g = 25;\n    var b = 255;\n}\n\nmsg.payload = rgbToHex(r, g, b);\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 9,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 400,
+        "wires": [
+            [
+                "680eacb8d3e540b2",
+                "27567639bbd3f734"
+            ]
+        ]
+    },
+    {
+        "id": "308fd38c4b3e0fc5",
+        "type": "mqtt in",
+        "z": "9925ae1237f95fb0",
+        "name": "Temperature",
+        "topic": "node/push-button:1/thermometer/0:1/temperature",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "29fba84a.b2af58",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 290,
+        "y": 400,
+        "wires": [
+            [
+                "5f05b0b800a6c1ee",
+                "6bb8288a7fdd4884",
+                "a66a334e7a07817b",
+                "6f08cb912a59b9e0"
+            ]
+        ]
+    },
+    {
+        "id": "9ff65f68459bf453",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "g": "49e92c1436c53a76",
+        "name": "+5",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "5",
+        "payloadType": "num",
+        "x": 290,
+        "y": 280,
+        "wires": [
+            [
+                "a66a334e7a07817b",
+                "5f05b0b800a6c1ee"
+            ]
+        ]
+    },
+    {
+        "id": "a66a334e7a07817b",
+        "type": "change",
+        "z": "9925ae1237f95fb0",
+        "name": "Temp flow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "temperature",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "680eacb8d3e540b2",
+        "type": "change",
+        "z": "9925ae1237f95fb0",
+        "name": "Color flow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "color",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 820,
+        "y": 600,
+        "wires": [
+            [
+                "fdb0c48d430c9133"
+            ]
+        ]
+    },
+    {
+        "id": "267764eb4b282061",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "g": "49e92c1436c53a76",
+        "name": "+15",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "15",
+        "payloadType": "num",
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "5f05b0b800a6c1ee",
+                "a66a334e7a07817b"
+            ]
+        ]
+    },
+    {
+        "id": "6d9fce059be7741a",
+        "type": "mqtt out",
+        "z": "9925ae1237f95fb0",
+        "name": "Ans",
+        "topic": "node/power-controller:0/led-strip/-/effect/set",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "29fba84a.b2af58",
+        "x": 1410,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "fdb0c48d430c9133",
+        "type": "function",
+        "z": "9925ae1237f95fb0",
+        "name": "Connecting",
+        "func": "msg.payload = {\n    \"type\": flow.get(\"typ\"), \"wait\": 5000, \"color\": flow.get(\"color\")\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 2,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 600,
+        "wires": [
+            [
+                "6d9fce059be7741a",
+                "7b3b623297e7ed37",
+                "4a923d53aeb71c9e"
+            ]
+        ]
+    },
+    {
+        "id": "5c4569e32563e4f6",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "name": "refresh",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"type\":\"solid_color\", \"color\":\"#ff3030\"}",
+        "payloadType": "str",
+        "x": 1210,
+        "y": 680,
+        "wires": [
+            [
+                "6d9fce059be7741a",
+                "4a923d53aeb71c9e",
+                "7b3b623297e7ed37"
+            ]
+        ]
+    },
+    {
+        "id": "3c3566baecceb31d",
+        "type": "change",
+        "z": "9925ae1237f95fb0",
+        "name": "Reset Color flow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "color",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1100,
+        "y": 520,
+        "wires": [
+            [
+                "fdb0c48d430c9133"
+            ]
+        ]
+    },
+    {
+        "id": "2e0a03b59be61ac0",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "name": "RESET",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "#000000",
+        "payloadType": "str",
+        "x": 1090,
+        "y": 440,
+        "wires": [
+            [
+                "3c3566baecceb31d"
+            ]
+        ]
+    },
+    {
+        "id": "6bb8288a7fdd4884",
+        "type": "debug",
+        "z": "9925ae1237f95fb0",
+        "name": "Input test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "80ecf6e63941b426",
+        "type": "mqtt in",
+        "z": "9925ae1237f95fb0",
+        "name": "CO2",
+        "topic": "node/air-quality-monitor:0/co2-meter/-/concentration",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "29fba84a.b2af58",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 310,
+        "y": 600,
+        "wires": [
+            [
+                "6a22df79179b26e9",
+                "6bb8288a7fdd4884",
+                "2bfe351dc734d7d4",
+                "2b4f35dcfb0358b9",
+                "83cfb73ade7524bd"
+            ]
+        ]
+    },
+    {
+        "id": "6a22df79179b26e9",
+        "type": "change",
+        "z": "9925ae1237f95fb0",
+        "name": "CO2 flow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "CO2",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "64b12a98da9ee1d0",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "g": "6d6b3674232e94b6",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "500",
+        "payloadType": "str",
+        "x": 290,
+        "y": 700,
+        "wires": [
+            [
+                "6a22df79179b26e9",
+                "2bfe351dc734d7d4",
+                "9d1167d37f1c2e2a",
+                "2b4f35dcfb0358b9"
+            ]
+        ]
+    },
+    {
+        "id": "3ce20d1a9479eb7b",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "g": "6d6b3674232e94b6",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "3000",
+        "payloadType": "str",
+        "x": 290,
+        "y": 740,
+        "wires": [
+            [
+                "6a22df79179b26e9",
+                "2bfe351dc734d7d4",
+                "9d1167d37f1c2e2a",
+                "2b4f35dcfb0358b9"
+            ]
+        ]
+    },
+    {
+        "id": "2bfe351dc734d7d4",
+        "type": "function",
+        "z": "9925ae1237f95fb0",
+        "name": "MeasuringCO2",
+        "func": "function rgbToHex(r, g, b) {\n    // Ensure the values are in the range 0-255\n    if ((r < 0 || r > 255) || (g < 0 || g > 255) || (b < 0 || b > 255)) {\n        throw new Error(\"Invalid RGB value. Each component must be between 0 and 255.\");\n    }\n\n    // Convert each component to a 2-digit hex value and concatenate\n    const toHex = (component) => component.toString(16).padStart(2, '0'); // Ensure 2 digits\n    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;\n}\n\nvar res = msg.payload;\n\nif(msg.payload>=3000) {\n    var r = 255;\n    var g = 0;\n    var b = 0;\n}\n\nmsg.payload = rgbToHex(r,g,b);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 5,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 600,
+        "wires": [
+            [
+                "680eacb8d3e540b2",
+                "27567639bbd3f734"
+            ]
+        ]
+    },
+    {
+        "id": "27567639bbd3f734",
+        "type": "debug",
+        "z": "9925ae1237f95fb0",
+        "name": "HexColor",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "d85a17681b41e770",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "g": "49e92c1436c53a76",
+        "name": "+25",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "25",
+        "payloadType": "num",
+        "x": 290,
+        "y": 200,
+        "wires": [
+            [
+                "5f05b0b800a6c1ee"
+            ]
+        ]
+    },
+    {
+        "id": "48e071b9924096fb",
+        "type": "inject",
+        "z": "9925ae1237f95fb0",
+        "g": "49e92c1436c53a76",
+        "name": "-5",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "-5",
+        "payloadType": "num",
+        "x": 290,
+        "y": 320,
+        "wires": [
+            [
+                "5f05b0b800a6c1ee"
+            ]
+        ]
+    },
+    {
+        "id": "7b3b623297e7ed37",
+        "type": "change",
+        "z": "9925ae1237f95fb0",
+        "name": "LED flow",
+        "rules": [
+            {
+                "t": "set",
+                "p": "LED",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1420,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9d1167d37f1c2e2a",
+        "type": "debug",
+        "z": "9925ae1237f95fb0",
+        "name": "CO2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 570,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "ecbe96d3b1a11417",
+        "type": "change",
+        "z": "9925ae1237f95fb0",
+        "name": "pulse-color typ",
+        "rules": [
+            {
+                "t": "set",
+                "p": "typ",
+                "pt": "flow",
+                "to": "pulse-color",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2b4f35dcfb0358b9",
+        "type": "switch",
+        "z": "9925ae1237f95fb0",
+        "name": "Types",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "3000",
+                "vt": "num"
+            },
+            {
+                "t": "lt",
+                "v": "3000",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 810,
+        "y": 780,
+        "wires": [
+            [
+                "632a96be282ae58d",
+                "e5c7cc131d148879"
+            ],
+            [
+                "ecbe96d3b1a11417"
+            ]
+        ]
+    },
+    {
+        "id": "632a96be282ae58d",
+        "type": "debug",
+        "z": "9925ae1237f95fb0",
+        "name": "types",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1010,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "e5c7cc131d148879",
+        "type": "change",
+        "z": "9925ae1237f95fb0",
+        "name": "stroboscope",
+        "rules": [
+            {
+                "t": "set",
+                "p": "typ",
+                "pt": "flow",
+                "to": "stroboscope",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1030,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4a923d53aeb71c9e",
+        "type": "debug",
+        "z": "9925ae1237f95fb0",
+        "name": "Ans test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1440,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "83cfb73ade7524bd",
+        "type": "ui_chart",
+        "z": "9925ae1237f95fb0",
+        "name": "CO2",
+        "group": "57ff470b.93fdf8",
+        "order": 8,
+        "width": "0",
+        "height": "0",
+        "label": "CO2",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 550,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f08cb912a59b9e0",
+        "type": "ui_chart",
+        "z": "9925ae1237f95fb0",
+        "name": "Temperature",
+        "group": "57ff470b.93fdf8",
+        "order": 9,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 830,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "28ab82d6afe4aabd",
+        "type": "mqtt in",
+        "z": "9925ae1237f95fb0",
+        "name": "Button reset",
+        "topic": "node/push-button:1/push-button/-/event-count",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "29fba84a.b2af58",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1050,
+        "y": 340,
+        "wires": [
+            [
+                "3c3566baecceb31d"
+            ]
+        ]
+    },
+    {
+        "id": "29fba84a.b2af58",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "57ff470b.93fdf8",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "11207769.c31889",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "11207769.c31889",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard"
+    }
+]
